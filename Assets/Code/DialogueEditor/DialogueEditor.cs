@@ -82,7 +82,7 @@ public class DialogueEditor : EditorWindow
         else if(Event.current.type == EventType.MouseUp && draggingNode != null)
         {
             draggingNode = null;
-            selectedDialogue.GetRootNode().rect.position = Event.current.mousePosition;
+            draggingNode.rect.position = Event.current.mousePosition;
         }
 
     }
