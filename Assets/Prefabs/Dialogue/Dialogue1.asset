@@ -15,19 +15,20 @@ MonoBehaviour:
   nodes:
   - uniqueID: 1
     text: Text Goes Here2
-    children: []
+    children:
+    - 2
     rect:
       serializedVersion: 2
-      x: 587
-      y: 109
+      x: 346
+      y: 104
       width: 200
       height: 200
-  - uniqueID: 1
-    text: Text Goes Here2
+  - uniqueID: 2
+    text: Text Goes Here1
     children: []
     rect:
       serializedVersion: 2
-      x: 120
-      y: 50
+      x: 83
+      y: 57
       width: 200
       height: 200

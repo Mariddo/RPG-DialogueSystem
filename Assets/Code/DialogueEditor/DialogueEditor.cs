@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class DialogueEditor : EditorWindow
     DialogueNode draggingNode = null;
 
     Vector2 draggingOffset; 
+
+    DialogueNode creatingNode;
 
 
     [MenuItem("Window/Dialogue Editor")]
@@ -49,12 +52,20 @@ public class DialogueEditor : EditorWindow
         else
         {
             ProcessEvents();
+
             foreach (DialogueNode node in selectedDialogue.GetAllNodes())
             {
-
+                DrawConnections(node);
+            }
+            foreach (DialogueNode node in selectedDialogue.GetAllNodes())
+            {
                 OnGUINode(node);
-
-                    
+            }
+            if (creatingNode != null)
+            {
+                Undo.RecordObject(selectedDialogue, "Added new Child Node");
+                selectedDialogue.CreateNode(creatingNode);
+                creatingNode = null;
             }
 
         }
@@ -82,7 +93,6 @@ public class DialogueEditor : EditorWindow
         else if(Event.current.type == EventType.MouseUp && draggingNode != null)
         {
             draggingNode = null;
-            draggingNode.rect.position = Event.current.mousePosition;
         }
 
     }
@@ -107,10 +117,15 @@ public class DialogueEditor : EditorWindow
             
         }
 
-            foreach (DialogueNode childNode in selectedDialogue.GetAllChildren(node))
-            {
-                EditorGUILayout.LabelField(childNode.text);
-            }
+        if(GUILayout.Button("+"))
+        {
+            creatingNode = node;
+        }
+
+        foreach (DialogueNode childNode in selectedDialogue.GetAllChildren(node))
+        {
+            EditorGUILayout.LabelField(childNode.text);
+        }
 
         GUILayout.EndArea();
 
@@ -152,6 +167,28 @@ public class DialogueEditor : EditorWindow
         return dn;
     }
 
+    private void DrawConnections(DialogueNode node)
+    {
+        //Get the start position
+        Vector3 startPosition = new Vector2(node.rect.xMax, node.rect.center.y);
+
+        //Draw a curve for each node.
+        foreach (DialogueNode childNode in selectedDialogue.GetAllChildren(node))
+        {
+            EditorGUILayout.LabelField(childNode.text);
+            Vector3 endPosition = new Vector2(childNode.rect.xMin, childNode.rect.center.y);
+            Vector3 controlPointOffset = endPosition - startPosition;
+            controlPointOffset.y = 0;
+            controlPointOffset.x *= 0.8f;
+            Handles.DrawBezier(
+                startPosition, endPosition, 
+                startPosition + controlPointOffset, 
+                endPosition - controlPointOffset, 
+                Color.white, null, 4f);
+        }
+
+
+    }
 
 
 

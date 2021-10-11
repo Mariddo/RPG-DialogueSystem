@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace RPG.Dialogue.Editor{
     public class Dialogue : ScriptableObject
     {
         [SerializeField] 
-        List<DialogueNode> nodes;
+        List<DialogueNode> nodes = new List<DialogueNode>();
 
         Dictionary<string, DialogueNode> nodeLookup = new Dictionary<string, DialogueNode>();
 
@@ -16,11 +17,14 @@ namespace RPG.Dialogue.Editor{
         {
             if(nodes.Count == 0)
             {
-                nodes.Add(new DialogueNode());
+                DialogueNode rootNode = new DialogueNode();
+                rootNode.uniqueID = Guid.NewGuid().ToString();
+                nodes.Add(rootNode);
             }
 
         }
         #endif
+
 
     public IEnumerable<DialogueNode> GetAllNodes()
     {
@@ -33,15 +37,7 @@ namespace RPG.Dialogue.Editor{
         return nodes[0];
     }
 
-    private void OnValidate(){
-        nodeLookup.Clear();
-        foreach (DialogueNode node in GetAllNodes())
-        {
-            nodeLookup[node.uniqueID] = node;
 
-        }
-
-    }
 
     public IEnumerable<DialogueNode> GetAllChildren(DialogueNode parentNode)
     {
@@ -52,6 +48,25 @@ namespace RPG.Dialogue.Editor{
                 yield return nodeLookup[childID];
             }
         }
+    }
+
+    public void CreateNode(DialogueNode parent)
+    {
+        DialogueNode newNode = new DialogueNode();
+        newNode.uniqueID = Guid.NewGuid().ToString();
+        parent.children.Add(newNode.uniqueID);
+        nodes.Add(newNode);
+        Validate();
+    }
+
+    public void Validate(){
+        nodeLookup.Clear();
+        foreach (DialogueNode node in GetAllNodes())
+        {
+            nodeLookup[node.uniqueID] = node;
+
+        }
+
     }
 
 }
