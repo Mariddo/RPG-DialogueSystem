@@ -25,10 +25,11 @@ MonoBehaviour:
       height: 200
   - uniqueID: 2
     text: Text Goes Here1
-    children: []
+    children:
+    - 74cb1447-986e-42c1-8784-824fe51f92b8
     rect:
       serializedVersion: 2
-      x: 83
-      y: 57
+      x: 34
+      y: 33
       width: 200
       height: 200

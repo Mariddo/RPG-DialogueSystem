@@ -52,6 +52,7 @@ namespace RPG.Dialogue.Editor{
 
     public void CreateNode(DialogueNode parent)
     {
+        
         DialogueNode newNode = new DialogueNode();
         newNode.uniqueID = Guid.NewGuid().ToString();
         parent.children.Add(newNode.uniqueID);
@@ -67,6 +68,18 @@ namespace RPG.Dialogue.Editor{
 
         }
 
+    }
+
+    public void DeleteNode(DialogueNode nodeToDelete)
+    {
+        nodes.Remove(nodeToDelete);
+        Validate();
+
+
+        foreach (DialogueNode node in GetAllNodes())
+        {
+            node.children.Remove(nodeToDelete.uniqueID);
+        }
     }
 
 }
